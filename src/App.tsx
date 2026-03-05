@@ -11,11 +11,17 @@ import {
   RefreshCw,
   AlertCircle,
   Sun,
-  Moon
+  Moon,
+  LogOut
 } from 'lucide-react';
 import { transformText, TransformationResult } from './services/geminiService';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('isAuthenticated') === 'true';
+  });
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TransformationResult | null>(null);
@@ -38,6 +44,22 @@ export default function App() {
     }
   }, [darkMode]);
 
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loginForm.username === 'Unico' && loginForm.password === 'Unico') {
+      setIsAuthenticated(true);
+      localStorage.setItem('isAuthenticated', 'true');
+      setLoginError('');
+    } else {
+      setLoginError('Credenciais inválidas. Tente novamente.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('isAuthenticated');
+  };
+
   const handleTransform = async () => {
     if (!input.trim()) return;
     
@@ -58,6 +80,84 @@ export default function App() {
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className="min-h-screen bg-[#f5f5f5] dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 selection:bg-indigo-100 dark:selection:bg-indigo-900/30 transition-colors duration-300">
+        
+        <AnimatePresence mode="wait">
+          {!isAuthenticated ? (
+            <motion.div
+              key="login"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center justify-center min-h-screen p-4"
+            >
+              <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl p-8 space-y-8">
+                <div className="text-center space-y-2">
+                  <div className="w-12 h-12 bg-slate-600 dark:bg-slate-700 rounded-xl flex items-center justify-center text-white mx-auto mb-4">
+                    <ShieldCheck size={28} />
+                  </div>
+                  <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Globo Ético</h1>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Acesse o sistema de comunicação formal</p>
+                </div>
+
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Usuário</label>
+                    <input
+                      type="text"
+                      value={loginForm.username}
+                      onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                      className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                      placeholder="Seu usuário"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Senha</label>
+                    <input
+                      type="password"
+                      value={loginForm.password}
+                      onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                      className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                      placeholder="Sua senha"
+                      required
+                    />
+                  </div>
+
+                  {loginError && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-xs text-red-500 font-medium text-center"
+                    >
+                      {loginError}
+                    </motion.p>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-500/20 active:scale-[0.98]"
+                  >
+                    Entrar
+                  </button>
+                </form>
+
+                <div className="pt-4 flex justify-center">
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  >
+                    {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="app"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col min-h-screen"
+            >
       {/* Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 transition-colors duration-300">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -81,6 +181,13 @@ export default function App() {
               aria-label="Toggle dark mode"
             >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 transition-all"
+              title="Sair"
+            >
+              <LogOut size={18} />
             </button>
           </div>
         </div>
@@ -268,7 +375,10 @@ export default function App() {
           </div>
         </div>
       </footer>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
-   </div>
   );
 }
