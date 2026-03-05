@@ -260,7 +260,7 @@ export default function App() {
       {/* Footer */}
       <footer className="max-w-5xl mx-auto px-4 py-8 border-t border-slate-200 dark:border-slate-800 mt-12 transition-colors duration-300">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-400 dark:text-slate-500 text-xs">
-          <p>© 2024 Globo Ético. Todos os direitos reservados.</p>
+          <p>© 2026 Globo Ético. Todos os direitos reservados.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Privacidade</a>
             <a href="#" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Termos</a>
