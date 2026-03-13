@@ -15,6 +15,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { transformText, TransformationResult } from './services/geminiService';
+import logo from './DATA/input_file.png';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -161,17 +162,20 @@ export default function App() {
       {/* Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 transition-colors duration-300">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-slate-600 dark:bg-slate-700 rounded-lg flex items-center justify-center text-white">
-              <ShieldCheck size={20} />
+          <div className="relative flex items-center justify-center w-full">
+          {/* A logo fica "por cima" no canto esquerdo, sem empurrar o texto */}
+            <div className="absolute left-0 w-8 h-8 flex items-center justify-center">
+            <img src={logo} alt="Globo Ético" style={{ transform: 'scale(5.5)' }} referrerPolicy="no-referrer" />
             </div>
-            <h1 className="font-semibold text-lg tracking-tight">Globo Ético - Comunicação Formal</h1>
-          </div>
+
+              {/* O h1 agora centraliza no meio real da div pai */}
+              <h1 className="font-semibold text-lg tracking-tight">
+              Comunicação Formal
+              </h1>
+            </div>
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               <span className="flex items-center gap-1"><ShieldCheck size={12} className="text-indigo-500" /> Relacionamento</span>
-              <ArrowRight size={14} />
-              <span>Diplomático</span>
               <ArrowRight size={14} />
               <span>Estratégico</span>
             </div>
